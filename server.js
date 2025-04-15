@@ -1,7 +1,6 @@
 const express = require('express');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
-const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const httpServer = createServer(app);
@@ -14,11 +13,24 @@ const io = new Server(httpServer, {
 
 const sessions = new Map();
 
+// Fonction pour générer un code de session de 6 caractères
+function generateSessionCode() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let code;
+  do {
+    code = '';
+    for (let i = 0; i < 6; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+  } while (sessions.has(code));
+  return code;
+}
+
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
 
   socket.on('create_session', () => {
-    const sessionId = uuidv4();
+    const sessionId = generateSessionCode();
     sessions.set(sessionId, new Set([socket.id]));
     socket.join(sessionId);
     socket.emit('session_created', { sessionId });
