@@ -13,13 +13,13 @@ const io = new Server(httpServer, {
 
 const sessions = new Map();
 
-// Fonction pour générer un code de session de 6 caractères
+// Fonction pour générer un code de session de 4 caractères
 function generateSessionCode() {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const chars = '0123456789';
   let code;
   do {
     code = '';
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 4; i++) {
       code += chars.charAt(Math.floor(Math.random() * chars.length));
     }
   } while (sessions.has(code));
